@@ -1,2 +1,2 @@
-# can-i-eat-this
-"Can I Eat This?" is a food/diet/recipe journal and organization tool
+# "Can I Eat This?"
+_a food/diet/recipe journal and organization tool_
