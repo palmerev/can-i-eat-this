@@ -9,7 +9,7 @@ _A food/diet/recipe journal and organization tool_
 - see foods ranked by popularity (based on meal logs), which could be helpful for seeing how balanced a diet is
 - see a chronological history of their meal logs and notes
 
-## Rough Development Plan
+## Development Plan
 
 Features will be implemented roughly in the order listed above:
 
