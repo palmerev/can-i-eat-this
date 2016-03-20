@@ -21,7 +21,7 @@ Features will be implemented roughly in the order listed above:
 
 ## Technologies
 
-- Django/Python 3 (likely backed by PostgreSQL)
+- Django/Python 3 (likely backed by PostgreSQL) OR possibly Ruby on Rails
 - React and friends, with ES6/Babel
 - HTML5/CSS3
 - Webpack
