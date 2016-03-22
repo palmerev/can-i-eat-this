@@ -21,11 +21,13 @@ Features will be implemented roughly in the order listed above:
 
 ## Technologies
 
-- Django/Python 3 (likely backed by PostgreSQL) OR possibly Ruby on Rails
+- Django/Python 3, possibly with Django REST Framework
 - React and friends, with ES6/Babel
 - HTML5/CSS3
 - Webpack
 - Mocha/Chai (unit testing)
+- Likely hosted on Web Faction
+- likely backed by PostgreSQL
 
 --
 _DISCLAIMER: This app does not and will not provide professional medical or nutrition advice, and does not substitute for such advice. It is intended only as an organizational tool to help users gather better data about their relationships with food._
