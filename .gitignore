@@ -52,6 +52,9 @@ coverage.xml
 # Django stuff:
 *.log
 
+# Database
+*.sqlite3
+
 # Sphinx documentation
 docs/_build/
 
@@ -60,3 +63,6 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+# Secrets!
+secrets.json
