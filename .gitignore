@@ -66,3 +66,6 @@ target/
 
 # Secrets!
 secrets.json
+
+# Node/NPM
+node_modules/
