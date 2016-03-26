@@ -1,8 +1,11 @@
+from unittest import skip
 from datetime import datetime
 
 from django.test import TestCase
 from django.core.urlresolvers import resolve
 from django.contrib.auth.models import User
+
+from rest_framework.test import APIRequestFactory, force_authenticate
 
 from .views import (food_list, food_detail, plan_list, plan_detail,
     food_list_for_plan)
@@ -50,7 +53,7 @@ class APIModelTestCase(TestCase):
 
     def test_food_model(self):
         "Test that Food has the correct fields"
-        food = Food.objects.create(name='Eggs')
+        food = Food.objects.create(owner=self.user, name='Eggs')
 
         self.assertEqual(food.name, 'Eggs')
         self.assertIs(type(food.date_created), datetime)
@@ -58,7 +61,7 @@ class APIModelTestCase(TestCase):
 
     def test_diet_plan_model(self):
         "Test that DietPlan has the correct fields"
-        plan = DietPlan.objects.create(user=self.user)
+        plan = DietPlan.objects.create(owner=self.user)
 
         self.assertIs(type(plan.date_created), datetime)
         self.assertIs(type(plan.date_modified), datetime)
@@ -67,8 +70,8 @@ class APIModelTestCase(TestCase):
 
     def test_diet_plan_food_model(self):
         "Test that DietPlanFood has the correct fields and default restrictions"
-        food = Food.objects.create(name='Spam')
-        plan = DietPlan.objects.create(user=self.user)
+        food = Food.objects.create(owner=self.user, name='Spam')
+        plan = DietPlan.objects.create(owner=self.user)
         dp_food = DietPlanFood.objects.create(food=food, plan=plan)
 
         self.assertEqual(dp_food.food.name, 'Spam')
@@ -83,10 +86,10 @@ class APIModelTestCase(TestCase):
 
     def test_food_log_model(self):
         """test that FoodLog has the correct fields"""
-        food = Food.objects.create(name='Spam')
-        plan = DietPlan.objects.create(user=self.user)
+        food = Food.objects.create(owner=self.user, name='Spam')
+        plan = DietPlan.objects.create(owner=self.user)
         dp_food = DietPlanFood.objects.create(food=food, plan=plan)
-        food_log = FoodLog.objects.create(author=self.user)
+        food_log = FoodLog.objects.create(owner=self.user)
 
         self.assertIsNotNone(food_log.id)
         self.assertEqual(len(food_log.foods.all()), 0)
