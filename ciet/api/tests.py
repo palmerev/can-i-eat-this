@@ -99,3 +99,39 @@ class APIModelTestCase(TestCase):
 
         self.assertIs(type(food_log.date_created), datetime)
         self.assertEqual(food_log.log, "")
+
+
+class APIViewTestCase(TestCase):
+    """Test that views return the expected data"""
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.user1 = User.objects.create_user(username="evan123")
+        self.user2 = User.objects.create_user(username="aaron456")
+        self.u1_food1 = Food.objects.create(owner=self.user1, name='Eggs')
+        self.u1_food2 = Food.objects.create(owner=self.user1, name='Cheese')
+        self.u1_food3 = Food.objects.create(owner=self.user1, name='Spam')
+        self.u2_food1 = Food.objects.create(owner=self.user2, name='Peppers')
+        self.u2_food2 = Food.objects.create(owner=self.user2, name='Onions')
+
+    def test_food_list_view_get(self):
+        request = self.factory.get('/api/v1/foods/')
+        force_authenticate(request, user=self.user1)
+        response = food_list(request)
+
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertEqual(len(data), 3)
+        # DRF Response returns an OrderedDict, convert it to dict to get names
+        food_names = [dict(x)['name'] for x in data]
+        self.assertListEqual(
+            [self.u1_food1.name, self.u1_food2.name, self.u1_food3.name],
+            food_names
+        )
+
+    @skip
+    def test_food_list_post(self):
+        pass
+
+    def test_food_detail_view(self):
+        self.plan1 = DietPlan.objects.create(owner=self.user1)
+        self.plan2 = DietPlan.objects.create(owner=self.user2)
