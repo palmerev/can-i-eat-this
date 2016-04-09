@@ -123,7 +123,7 @@ class APIViewGetRequestTestCase(TestCase):
         data = response.data
         self.assertEqual(len(data), 3)
         # DRF Response returns an OrderedDict, convert it to dict to get names
-        food_names = [dict(x)['name'] for x in data]
+        food_names = [x['name'] for x in data]
         self.assertListEqual(
             [self.u1_food1.name, self.u1_food2.name, self.u1_food3.name],
             food_names
@@ -136,8 +136,7 @@ class APIViewGetRequestTestCase(TestCase):
         request = self.factory.get('/api/v1/dietplans/')
         force_authenticate(request, user=self.user1)
         response = plan_list(request)
-        data = [dict(x) for x in response.data]
-        self.assertEqual(len(data), 1)
+        self.assertEqual(len(response.data), 1)
         # print(data)
 
     def test_plan_list_many_plans_get(self):
@@ -147,9 +146,8 @@ class APIViewGetRequestTestCase(TestCase):
         request = self.factory.get('/api/v1/dietplans/')
         force_authenticate(request, user=self.user2)
         response = plan_list(request)
-        plans = [dict(plan) for plan in response.data]
-        self.assertEqual(len(plans), 2)
-        for plan in plans:
+        self.assertEqual(len(response.data), 2)
+        for plan in response.data:
             self.assertEqual(plan['owner'], self.user2.id)
 
     def test_food_detail_view_get(self):
@@ -158,11 +156,10 @@ class APIViewGetRequestTestCase(TestCase):
         request = self.factory.get('api/v1/foods/{}/'.format(pk))
         force_authenticate(request, user=self.user1)
         response = food_detail(request, pk)
-        food = dict(response.data)
 
-        self.assertEqual(len(food), 5)  # five fields
-        self.assertEqual(food['owner'], self.user1.id)
-        self.assertEqual(food['name'], 'Eggs')
+        self.assertEqual(len(response.data), 5)  # five fields
+        self.assertEqual(response.data['owner'], self.user1.id)
+        self.assertEqual(response.data['name'], 'Eggs')
 
 
 class APIViewPostRequestTestCase(TestCase):
