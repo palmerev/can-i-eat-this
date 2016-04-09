@@ -3,8 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from api.models import Food
-from api.serializers import FoodSerializer
+from api.models import Food, DietPlan
+from api.serializers import FoodSerializer, DietPlanSerializer
 
 
 def api_index(request):
@@ -24,17 +24,28 @@ def food_list(request):
         return Response(serializer.data)
 
 
+@api_view(['GET'])
 def food_detail(request):
     pass
 
 
+@api_view(['GET'])
 def plan_list(request):
-    pass
+    if request.method == 'GET':
+        try:
+            plans = DietPlan.objects.filter(owner=request.user)
+        except TypeError as e:
+            print(e.msg)
+            return HttpResponse(status=403)
+        serializer = DietPlanSerializer(plans, many=True)
+        return Response(serializer.data)
 
 
+@api_view(['GET'])
 def plan_detail(request):
     pass
 
 
+@api_view(['GET'])
 def food_list_for_plan(request):
     pass

@@ -128,10 +128,36 @@ class APIViewTestCase(TestCase):
             food_names
         )
 
+
+    def test_plan_list_get(self):
+        self.plan1 = DietPlan.objects.create(owner=self.user1, name="plan1")
+        self.plan2 = DietPlan.objects.create(owner=self.user2, name="plan2")
+        request = self.factory.get('/api/v1/dietplans/')
+        force_authenticate(request, user=self.user1)
+        response = plan_list(request)
+        data = [dict(x) for x in response.data]
+        self.assertEqual(len(data), 1)
+        # print(data)
+
+    def test_plan_list_many_plans_get(self):
+        self.plan2 = DietPlan.objects.create(owner=self.user2, name="plan2")
+        self.plan3 = DietPlan.objects.create(owner=self.user2, name="plan3")
+        request = self.factory.get('/api/v1/dietplans/')
+        force_authenticate(request, user=self.user2)
+        response = plan_list(request)
+        plans = [dict(plan) for plan in response.data]
+        self.assertEqual(len(plans), 2)
+        for plan in plans:
+            self.assertEqual(plan['owner'], self.user2.id)
+        # print(plans)
+
+    @skip
+    def test_food_detail_view_get(self):
+        self.plan_food1 = DietPlanFood.objects.create(
+            food=self.u1_food1, plan=self.plan1)
+        self.plan_food2 = DietPlanFood.objects.create(
+            food=self.u1_food2, plan=self.plan1)
+
     @skip
     def test_food_list_post(self):
         pass
-
-    def test_food_detail_view(self):
-        self.plan1 = DietPlan.objects.create(owner=self.user1)
-        self.plan2 = DietPlan.objects.create(owner=self.user2)
