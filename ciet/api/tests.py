@@ -128,7 +128,6 @@ class APIViewTestCase(TestCase):
             food_names
         )
 
-
     def test_plan_list_get(self):
         self.plan1 = DietPlan.objects.create(owner=self.user1, name="plan1")
         self.plan2 = DietPlan.objects.create(owner=self.user2, name="plan2")
@@ -151,12 +150,16 @@ class APIViewTestCase(TestCase):
             self.assertEqual(plan['owner'], self.user2.id)
         # print(plans)
 
-    @skip
     def test_food_detail_view_get(self):
-        self.plan_food1 = DietPlanFood.objects.create(
-            food=self.u1_food1, plan=self.plan1)
-        self.plan_food2 = DietPlanFood.objects.create(
-            food=self.u1_food2, plan=self.plan1)
+        pk = 1
+        request = self.factory.get('api/v1/foods/{}/'.format(pk))
+        force_authenticate(request, user=self.user1)
+        response = food_detail(request, pk)
+        food = dict(response.data)
+
+        self.assertEqual(len(food), 5)  # five fields
+        self.assertEqual(food['owner'], self.user1.id)
+        self.assertEqual(food['name'], 'Eggs')
 
     @skip
     def test_food_list_post(self):

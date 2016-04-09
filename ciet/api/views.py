@@ -28,7 +28,14 @@ def food_list(request):
 @api_view(['GET'])
 def food_detail(request, pk):
     """Return details for the food with the given pk"""
-    pass
+    if request.method == 'GET':
+        try:
+            food = Food.objects.get(pk=pk)
+        except TypeError as e:
+            print(e.msg)
+            return HttpResponse(status=403)
+        serializer = FoodSerializer(food)
+        return Response(serializer.data)
 
 
 @api_view(['GET'])

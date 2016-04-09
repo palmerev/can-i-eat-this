@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 class FoodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Food
-        fields = ('id', 'name', 'date_created', 'date_modified')
+        fields = ('id', 'owner', 'name', 'date_created', 'date_modified')
 
 
 class DietPlanSerializer(serializers.ModelSerializer):
