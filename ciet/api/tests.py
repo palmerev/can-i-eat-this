@@ -101,8 +101,8 @@ class APIModelTestCase(TestCase):
         self.assertEqual(food_log.log, "")
 
 
-class APIViewTestCase(TestCase):
-    """Test that views return the expected data"""
+class APIViewGetRequestTestCase(TestCase):
+    """Test that views return the expected data for a GET request"""
     def setUp(self):
         self.factory = APIRequestFactory()
         self.user1 = User.objects.create_user(username="evan123")
@@ -113,7 +113,8 @@ class APIViewTestCase(TestCase):
         self.u2_food1 = Food.objects.create(owner=self.user2, name='Peppers')
         self.u2_food2 = Food.objects.create(owner=self.user2, name='Onions')
 
-    def test_food_list_view_get(self):
+    def test_food_list_get(self):
+        """Test that food_list GET returns all foods for the user"""
         request = self.factory.get('/api/v1/foods/')
         force_authenticate(request, user=self.user1)
         response = food_list(request)
@@ -129,6 +130,7 @@ class APIViewTestCase(TestCase):
         )
 
     def test_plan_list_get(self):
+        """Test that plan_list GET returns all plans for the user"""
         self.plan1 = DietPlan.objects.create(owner=self.user1, name="plan1")
         self.plan2 = DietPlan.objects.create(owner=self.user2, name="plan2")
         request = self.factory.get('/api/v1/dietplans/')
@@ -139,6 +141,7 @@ class APIViewTestCase(TestCase):
         # print(data)
 
     def test_plan_list_many_plans_get(self):
+        """Test that plan_list GET can return more than one plan for the user"""
         self.plan2 = DietPlan.objects.create(owner=self.user2, name="plan2")
         self.plan3 = DietPlan.objects.create(owner=self.user2, name="plan3")
         request = self.factory.get('/api/v1/dietplans/')
@@ -148,9 +151,9 @@ class APIViewTestCase(TestCase):
         self.assertEqual(len(plans), 2)
         for plan in plans:
             self.assertEqual(plan['owner'], self.user2.id)
-        # print(plans)
 
     def test_food_detail_view_get(self):
+        """Test that food_detail GET returns all five fields for food with pk"""
         pk = 1
         request = self.factory.get('api/v1/foods/{}/'.format(pk))
         force_authenticate(request, user=self.user1)
@@ -161,6 +164,57 @@ class APIViewTestCase(TestCase):
         self.assertEqual(food['owner'], self.user1.id)
         self.assertEqual(food['name'], 'Eggs')
 
+
+class APIViewPostRequestTestCase(TestCase):
+    """Test that views return the expected data for a POST request"""
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.user1 = User.objects.create_user(username="evan123")
+        self.user2 = User.objects.create_user(username="aaron456")
+        self.u1_food1 = Food.objects.create(owner=self.user1, name='Eggs')
+        self.u1_food2 = Food.objects.create(owner=self.user1, name='Cheese')
+        self.u1_food3 = Food.objects.create(owner=self.user1, name='Spam')
+        self.u2_food1 = Food.objects.create(owner=self.user2, name='Peppers')
+        self.u2_food2 = Food.objects.create(owner=self.user2, name='Onions')
+
     @skip
     def test_food_list_post(self):
+        """Test that a new food can be created, and its id returned"""
+        pass
+
+    @skip
+    def test_food_detail_post(self):
+        """Test that food_detail POST returns an error (should be PUT)"""
+        pass
+
+    @skip
+    def test_plan_list_post(self):
+        """Test that a new plan can be created, and its id returned"""
+        pass
+
+    @skip
+    def test_plan_detail_post(self):
+        """Test that plan_detail POST returns an error (should be PUT)"""
+        pass
+
+    @skip
+    def test_food_list_for_plan_post(self):
+        """Test that a food can be added to a plan (creates a DietPlanFood)"""
+        pass
+
+
+class APIViewPutRequestTestCase(TestCase):
+    """Test that views return the expected data for a PUT request"""
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.user1 = User.objects.create_user(username="evan123")
+        self.user2 = User.objects.create_user(username="aaron456")
+        self.u1_food1 = Food.objects.create(owner=self.user1, name='Eggs')
+        self.u1_food2 = Food.objects.create(owner=self.user1, name='Cheese')
+        self.u1_food3 = Food.objects.create(owner=self.user1, name='Spam')
+        self.u2_food1 = Food.objects.create(owner=self.user2, name='Peppers')
+        self.u2_food2 = Food.objects.create(owner=self.user2, name='Onions')
+
+    @skip
+    def test_food_list_put(self):
         pass
