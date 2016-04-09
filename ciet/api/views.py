@@ -14,6 +14,7 @@ def api_index(request):
 @csrf_exempt
 @api_view(['GET'])
 def food_list(request):
+    """Return all food records owned by the current user"""
     if request.method == 'GET':
         try:
             foods = Food.objects.filter(owner=request.user)
@@ -25,12 +26,14 @@ def food_list(request):
 
 
 @api_view(['GET'])
-def food_detail(request):
+def food_detail(request, pk):
+    """Return details for the food with the given pk"""
     pass
 
 
 @api_view(['GET'])
 def plan_list(request):
+    """Return all diet plan records owned by the current user"""
     if request.method == 'GET':
         try:
             plans = DietPlan.objects.filter(owner=request.user)
@@ -42,10 +45,12 @@ def plan_list(request):
 
 
 @api_view(['GET'])
-def plan_detail(request):
+def plan_detail(request, pk):
+    """Return details for the diet plan with the given pk"""
     pass
 
 
 @api_view(['GET'])
 def food_list_for_plan(request):
+    """Return all foods belonging to the diet plan with the given pk"""
     pass
