@@ -29,7 +29,7 @@ class DietPlanFood(models.Model):
         (RESTRICTED, 'Restricted'),
         (UNASSIGNED, 'Unassigned'))
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
-    plan = models.ForeignKey(DietPlan, on_delete=models.CASCADE)
+    plan = models.ForeignKey(DietPlan, related_name='foods', on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(
         choices=FOOD_RESTRICTIONS, default=UNASSIGNED)
     notes = models.CharField(max_length=255, blank=True)
