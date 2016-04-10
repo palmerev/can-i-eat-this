@@ -1,10 +1,12 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from api.models import Food, DietPlan
-from api.serializers import FoodSerializer, DietPlanSerializer
+from api.models import Food, DietPlan, DietPlanFood
+from api.serializers import (FoodSerializer, DietPlanSerializer,
+    DietPlanFoodSerializer)
 
 
 def api_index(request):
@@ -54,10 +56,23 @@ def plan_list(request):
 @api_view(['GET'])
 def plan_detail(request, pk):
     """Return details for the diet plan with the given pk"""
-    pass
+    if request.method == 'GET':
+        try:
+            plan = DietPlan.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return HttpResponse(status=404)
+        serializer = DietPlanSerializer(plan)
+        return Response(serializer.data)
 
 
 @api_view(['GET'])
-def food_list_for_plan(request):
+def food_list_for_plan(request, pk):
     """Return all foods belonging to the diet plan with the given pk"""
-    pass
+    if request.method == 'GET':
+        try:
+            plan_foods = DietPlanFood.objects.filter(plan=pk)
+        except TypeError as e:
+            print(e.msg)
+            return HttpResponse(status=403)
+        serializer = DietPlanFoodSerializer(plan_foods, many=True)
+        return Response(serializer.data)
