@@ -107,11 +107,11 @@ class APIViewGetRequestTestCase(TestCase):
         self.factory = APIRequestFactory()
         self.user1 = User.objects.create_user(username="evan123")
         self.user2 = User.objects.create_user(username="aaron456")
-        self.u1_food1 = Food.objects.create(owner=self.user1, name='Eggs')
-        self.u1_food2 = Food.objects.create(owner=self.user1, name='Cheese')
-        self.u1_food3 = Food.objects.create(owner=self.user1, name='Spam')
-        self.u2_food1 = Food.objects.create(owner=self.user2, name='Peppers')
-        self.u2_food2 = Food.objects.create(owner=self.user2, name='Onions')
+        self.eggs = Food.objects.create(owner=self.user1, name='Eggs')
+        self.cheese = Food.objects.create(owner=self.user1, name='Cheese')
+        self.spam = Food.objects.create(owner=self.user1, name='Spam')
+        self.peppers = Food.objects.create(owner=self.user2, name='Peppers')
+        self.onions = Food.objects.create(owner=self.user2, name='Onions')
 
     def test_food_list_get(self):
         """Test that food_list GET returns all foods for the user"""
@@ -125,7 +125,7 @@ class APIViewGetRequestTestCase(TestCase):
         # DRF Response returns an OrderedDict, convert it to dict to get names
         food_names = [x['name'] for x in data]
         self.assertListEqual(
-            [self.u1_food1.name, self.u1_food2.name, self.u1_food3.name],
+            [self.eggs.name, self.cheese.name, self.spam.name],
             food_names
         )
 
@@ -161,6 +161,27 @@ class APIViewGetRequestTestCase(TestCase):
         self.assertEqual(response.data['owner'], self.user1.id)
         self.assertEqual(response.data['name'], 'Eggs')
 
+    def test_food_list_for_plan_get(self):
+        self.plan1 = DietPlan.objects.create(owner=self.user1, name="plan1")
+        self.plan2 = DietPlan.objects.create(owner=self.user1, name="plan2")
+        self.plan1_eggs = DietPlanFood.objects.create(
+            food=self.eggs, plan=self.plan1)
+        self.plan1_cheese = DietPlanFood.objects.create(
+            food=self.cheese, plan=self.plan1)
+        self.plan1.foods.add(self.plan1_eggs)
+        self.plan1.foods.add(self.plan1_cheese)
+        pk = self.plan1.id
+        request = self.factory.get('/api/v1/dietplans/{}/foods/'.format(pk))
+        force_authenticate(request, user=self.user1)
+        response = food_list_for_plan(request, pk)
+        # print(response.data)
+
+        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data[0]['id'], pk)
+
+        food_names = [x['food']['name'] for x in response.data]
+        self.assertListEqual(food_names, ['Eggs', 'Cheese'])
+
 
 class APIViewPostRequestTestCase(TestCase):
     """Test that views return the expected data for a POST request"""
@@ -168,11 +189,11 @@ class APIViewPostRequestTestCase(TestCase):
         self.factory = APIRequestFactory()
         self.user1 = User.objects.create_user(username="evan123")
         self.user2 = User.objects.create_user(username="aaron456")
-        self.u1_food1 = Food.objects.create(owner=self.user1, name='Eggs')
-        self.u1_food2 = Food.objects.create(owner=self.user1, name='Cheese')
-        self.u1_food3 = Food.objects.create(owner=self.user1, name='Spam')
-        self.u2_food1 = Food.objects.create(owner=self.user2, name='Peppers')
-        self.u2_food2 = Food.objects.create(owner=self.user2, name='Onions')
+        self.eggs = Food.objects.create(owner=self.user1, name='Eggs')
+        self.cheese = Food.objects.create(owner=self.user1, name='Cheese')
+        self.spam = Food.objects.create(owner=self.user1, name='Spam')
+        self.peppers = Food.objects.create(owner=self.user2, name='Peppers')
+        self.onions = Food.objects.create(owner=self.user2, name='Onions')
 
     @skip
     def test_food_list_post(self):
@@ -206,11 +227,11 @@ class APIViewPutRequestTestCase(TestCase):
         self.factory = APIRequestFactory()
         self.user1 = User.objects.create_user(username="evan123")
         self.user2 = User.objects.create_user(username="aaron456")
-        self.u1_food1 = Food.objects.create(owner=self.user1, name='Eggs')
-        self.u1_food2 = Food.objects.create(owner=self.user1, name='Cheese')
-        self.u1_food3 = Food.objects.create(owner=self.user1, name='Spam')
-        self.u2_food1 = Food.objects.create(owner=self.user2, name='Peppers')
-        self.u2_food2 = Food.objects.create(owner=self.user2, name='Onions')
+        self.eggs = Food.objects.create(owner=self.user1, name='Eggs')
+        self.cheese = Food.objects.create(owner=self.user1, name='Cheese')
+        self.spam = Food.objects.create(owner=self.user1, name='Spam')
+        self.peppers = Food.objects.create(owner=self.user2, name='Peppers')
+        self.onions = Food.objects.create(owner=self.user2, name='Onions')
 
     @skip
     def test_food_list_put(self):
