@@ -13,8 +13,8 @@ def api_index(request):
     return HttpResponse("Hello, you've reached the API index.")
 
 
-@csrf_exempt
-@api_view(['GET'])
+# @csrf_exempt
+@api_view(['GET', 'POST'])
 def food_list(request):
     """Return all food records owned by the current user"""
     if request.method == 'GET':
@@ -24,6 +24,11 @@ def food_list(request):
             print(e.msg)
             return HttpResponse(status=403)
         serializer = FoodSerializer(foods, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        new_food = Food.objects.create(
+            name=request.POST['name'], owner=request.user)
+        serializer = FoodSerializer(new_food)
         return Response(serializer.data)
 
 

@@ -195,10 +195,20 @@ class APIViewPostRequestTestCase(TestCase):
         self.peppers = Food.objects.create(owner=self.user2, name='Peppers')
         self.onions = Food.objects.create(owner=self.user2, name='Onions')
 
-    @skip
     def test_food_list_post(self):
         """Test that a new food can be created, and its id returned"""
-        pass
+        request = self.factory.get('/api/v1/foods/')
+        force_authenticate(request, user=self.user1)
+        response = food_list(request)
+        self.assertEqual(len(response.data), 3)
+
+        request = self.factory.post('/api/v1/foods/', {'name': 'my_food'})
+        force_authenticate(request, user=self.user1)
+        response = food_list(request)
+        # print(response.data)
+        self.assertEqual(len(response.data), 5)  # all 5 fields in the new food
+        self.assertEqual(response.data['owner'], self.user1.id)
+        self.assertEqual(response.data['name'], 'my_food')
 
     @skip
     def test_food_detail_post(self):
