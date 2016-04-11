@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 from api.models import Food, DietPlan, DietPlanFood
 from api.serializers import (FoodSerializer, DietPlanSerializer,
@@ -13,7 +14,7 @@ def api_index(request):
     return HttpResponse("Hello, you've reached the API index.")
 
 
-# @csrf_exempt
+@csrf_exempt
 @api_view(['GET', 'POST'])
 def food_list(request):
     """Return all food records owned by the current user"""
@@ -29,7 +30,7 @@ def food_list(request):
         new_food = Food.objects.create(
             name=request.POST['name'], owner=request.user)
         serializer = FoodSerializer(new_food)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET'])

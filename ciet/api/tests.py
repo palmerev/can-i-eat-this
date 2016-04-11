@@ -210,10 +210,14 @@ class APIViewPostRequestTestCase(TestCase):
         self.assertEqual(response.data['owner'], self.user1.id)
         self.assertEqual(response.data['name'], 'my_food')
 
-    @skip
     def test_food_detail_post(self):
         """Test that food_detail POST returns an error (should be PUT)"""
-        pass
+        request = self.factory.post('/api/v1/foods/', {'name': 'my_food'})
+        force_authenticate(request, user=self.user1)
+        response = food_detail(request)
+        # print(response)
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.data['detail'], "Method \"POST\" not allowed.")
 
     @skip
     def test_plan_list_post(self):
