@@ -31,3 +31,5 @@ Features will be implemented roughly in the order listed above:
 
 --
 _DISCLAIMER: This app does not and will not provide professional medical or nutrition advice, and does not substitute for such advice. It is intended only as an organizational tool to help users gather better data about their relationships with food._
+
+Update May 10 2017
